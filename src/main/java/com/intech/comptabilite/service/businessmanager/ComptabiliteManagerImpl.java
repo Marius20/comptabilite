@@ -84,6 +84,33 @@ public class ComptabiliteManagerImpl implements ComptabiliteManager {
                 4.  Enregistrer (insert/update) la valeur de la séquence en persitance
                     (table sequence_ecriture_comptable)
          */
+    	
+    	Calendar cal = new GregorianCalendar();
+        cal.setTime(pEcritureComptable.getDate());
+        int last;
+        try {
+            last = sequenceEcritureComptableService
+                    .getDernierValeurByCodeAndAnnee(pEcritureComptable.getJournal().getCode(), cal.get(Calendar.YEAR));
+        } catch (NotFoundException ex) {
+            last = 0;
+        }
+        int lengthOfLast = String.valueOf(last).length();
+        int zeroToRepeatTimes = 5 - lengthOfLast;
+        Integer newSeq = last + 1;
+
+        StringBuilder stringSeq = new StringBuilder();
+        while (stringSeq.length() < zeroToRepeatTimes) {
+            stringSeq.append("0");
+        }
+
+        stringSeq.append(newSeq);
+
+        pEcritureComptable.setReference(pEcritureComptable.getJournal().getCode() + "-" + cal.get(Calendar.YEAR) + "/" + stringSeq);
+
+        SequenceEcritureComptable sequence = new SequenceEcritureComptable();
+        sequence.setAnnee(cal.get(Calendar.YEAR));
+        sequence.setDerniereValeur(last);
+        sequenceEcritureComptableService.upsert(sequence);
     }
 
     /**
