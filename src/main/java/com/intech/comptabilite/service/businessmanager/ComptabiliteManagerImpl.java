@@ -2,6 +2,7 @@ package com.intech.comptabilite.service.businessmanager;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
@@ -139,6 +140,19 @@ public class ComptabiliteManagerImpl implements ComptabiliteManager {
 
         // TODO ===== RG_Compta_5 : Format et contenu de la référence
         // vérifier que l'année dans la référence correspond bien à la date de l'écriture, idem pour le code journal...
+    
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(pEcritureComptable.getDate());
+
+        if(!pEcritureComptable.getReference().split("-")[1].split("/")[0].equals(String.valueOf(calendar.get(Calendar.YEAR)))) {
+            throw new FunctionalException("La référence doit contenir la date de l'écriture");
+        }
+
+        if(!pEcritureComptable.getReference().split("-")[0].equals(pEcritureComptable.getJournal().getCode())) {
+            throw new FunctionalException("La référence doit contenir le code du journal");
+        }
+     
     }
 
 
