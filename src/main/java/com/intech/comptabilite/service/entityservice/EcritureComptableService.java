@@ -70,7 +70,10 @@ public class EcritureComptableService {
 	public BigDecimal getTotalCredit(EcritureComptable ecriture) {
 		BigDecimal vRetour = BigDecimal.ZERO;
 		for (LigneEcritureComptable vLigneEcritureComptable : ecriture.getListLigneEcriture()) {
+			
+			// getDedit est appelé dans la condition if au lieu de getCrebit
 			if (vLigneEcritureComptable.getCredit() != null) {
+				
 				vRetour = vRetour.add(vLigneEcritureComptable.getCredit());
 			}
 		}
@@ -83,8 +86,9 @@ public class EcritureComptableService {
 	 * @return boolean
 	 */
 	public boolean isEquilibree(EcritureComptable ecriture) {
-		boolean vRetour = this.getTotalDebit(ecriture).equals(getTotalCredit(ecriture));
-		return vRetour;
+		
+		int vRetour = this.getTotalDebit(ecriture).compareTo(getTotalCredit(ecriture));
+		return vRetour == 0;
 	}
 
 }
